@@ -35,10 +35,10 @@ class Receiver():
 		elif self.on:  #If button is not down, but it used to be the last time we checked.
 			self.on = False
 			print("let go")
+		elif self.click_count > 0:
 			print("time now: " + str(now))
 			print("timestamp: " + str(self.timestamp))
 			print("click count: " + str(self.click_count))
-		elif self.click_count > 0:
 			if (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
 				print("It's been two seconds")
 				if self.click_count == 1:
