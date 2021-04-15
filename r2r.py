@@ -8,6 +8,42 @@ from datetime import datetime, timedelta
 import triggers
 import sensors
 
+class Receiver():
+	on = False
+	timestamp = None
+	click_count = 0
+	pin = None
+	
+	def __init__(self, pin):
+		self.pin = pin
+		
+		
+	def reset(self):
+		self.on = False
+		timestamp = None
+		click_count = 0
+			
+	def check(self):
+		now = int(time.time()) 
+		if self.pin.check():  #If button down.
+			self.on = True 
+		elif self.on:  #If button is not down, but it used to be the last time we checked.
+			if (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
+				if click_count == 1:
+					print(">1")
+				elif click_count == 2:
+					print(">3")
+				elif click_count == 3:
+					print(">3")
+				self.reset()			
+			else:  #If the last time we clicked was less than two seconds 
+				self.click_count += 1
+				self.timestamp = now
+			
+				
+	 
+	
+
 
 def loop():
 	print("Started\n")
@@ -50,17 +86,17 @@ def loop():
 	pin2 =  sensors.sensor("Two", 15)
 	pin3 =  sensors.sensor("Three", 18)
 	pin4 =  sensors.sensor("Four", 23)
+	
+	r1 = Receiver(pin1)
+	r2 = Receiver(pin2)
+	r3 = Receiver(pin3)
+	r4 = Receiver(pin4)
 
 	while True:
-		if pin1.check():
-			print("one!")
-		if pin2.check():
-			print("two!")
-		if pin3.check():
-			print("three!")
-		if pin4.check():
-			print("four!")
-
+		r1.check()
+		r2.check()
+		r3.check()
+		r4.check()
 
 
 if __name__ == '__main__':
