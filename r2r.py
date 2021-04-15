@@ -50,8 +50,6 @@ class Receiver():
 				self.reset()
 			else:  #If the last time we clicked was less than two seconds
 				print("It's been LESS THAN two seconds")
-				self.click_count += 1
-				self.timestamp = now
 
 
 
