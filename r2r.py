@@ -28,7 +28,7 @@ class Receiver():
 		if self.pin.check():  #If button down.
 			self.on = True 
 		elif self.on:  #If button is not down, but it used to be the last time we checked.
-			if (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
+			if click_count > 0 and (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
 				if click_count == 1:
 					print(">1")
 				elif click_count == 2:
