@@ -30,7 +30,7 @@ class Receiver():
 				self.click_count += 1
 				self.on = True
 				self.timestamp = now
-				print("click")
+				print("click " + self.pin.sensor_name)
 		elif self.on:  #If button is not down, but it used to be the last time we checked.
 			self.on = False
 			#print("let go")
