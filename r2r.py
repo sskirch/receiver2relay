@@ -29,11 +29,11 @@ class Receiver():
 			self.on = True 
 		elif self.on:  #If button is not down, but it used to be the last time we checked.
 			if click_count > 0 and (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
-				if click_count == 1:
+				if self.click_count == 1:
 					print(">1")
-				elif click_count == 2:
+				elif self.click_count == 2:
 					print(">3")
-				elif click_count == 3:
+				elif self.click_count == 3:
 					print(">3")
 				self.reset()			
 			else:  #If the last time we clicked was less than two seconds 
