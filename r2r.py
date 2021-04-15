@@ -20,24 +20,26 @@ class Receiver():
 		
 	def reset(self):
 		self.on = False
-		timestamp = None
-		click_count = 0
+		self.timestamp = None
+		self.click_count = 0
 			
 	def check(self):
-		now = int(time.time()) 
+		now = int(time.time())
+		print(self.click_count)
 		if self.pin.check():  #If button down.
 			if not self.on:
 				self.click_count += 1
 				self.on = True
 				self.timestamp = now
-				print("click") 
+				print("click")
 		elif self.on:  #If button is not down, but it used to be the last time we checked.
 			self.on = False
 			print("let go")
 			print("time now: " + str(now))
 			print("timestamp: " + str(self.timestamp))
-			print("click count: " + str(self.click_count)) 
-			if self.click_count > 0 and (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
+			print("click count: " + str(self.click_count))
+		elif self.click_count > 0:
+			if (now - self.timestamp) >= 2:  #If the last time we clicked was greater than two seconds 
 				print("It's been two seconds")
 				if self.click_count == 1:
 					print(">1")
@@ -45,16 +47,12 @@ class Receiver():
 					print(">3")
 				elif self.click_count == 3:
 					print(">3")
-				self.reset()			
-			else:  #If the last time we clicked was less than two seconds 
+				self.reset()
+			else:  #If the last time we clicked was less than two seconds
 				print("It's been LESS THAN two seconds")
-
 				self.click_count += 1
 				self.timestamp = now
-			
-				
-	 
-	
+
 
 
 def loop():
