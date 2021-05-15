@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 import time
@@ -8,6 +7,8 @@ from datetime import datetime, timedelta
 
 import triggers
 import sensors
+import RPi.GPIO as GPIO
+
 
 beep = None
 
@@ -24,8 +25,10 @@ class Beeper(triggers.trigger, object):
 		self.timestamp = time.time()
 
 	def check_expire(self):
-		if (time.time() - self.timestamp) > self.expiration:
-			self.off()
+		if self.status() and (time.time() - self.timestamp) > self.expiration:
+			triggers.trigger.off(self)
+			return True
+		return False
 
 
 
@@ -86,10 +89,8 @@ class Receiver():
 
 
 def loop():
+	GPIO.cleanup()
 	print("Started\n")
-
-
-
 
 	relay1 = triggers.trigger('One',21)
 	relay2 = triggers.trigger('Two',20)
@@ -108,9 +109,18 @@ def loop():
 	r3 = Receiver(pin3, relay3, beep)
 	r4 = Receiver(pin4, relay4, beep)
 
+	print('Beep On')
+	#GPIO.output(24, GPIO.HIGH)
 	beep.on()
-	time.sleep(2)
-	beep.off()
+	#while not beep.check_expire():
+	#	time.sleep(1)
+	#	print('!')
+	
+
+	#GPIO.output(24, GPIO.HIGH)
+	#beep.off()
+	#print('Beep Off')
+	
 
 	try:
 		while True:
