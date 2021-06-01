@@ -13,8 +13,7 @@ import RPi.GPIO as GPIO
 beep = None
 
 class Sprinkler(triggers.trigger, object):
-    timestamp = None    
-    
+    timestamp = None
     def __init__(self, trigger_name_in, GPIO_Pin_in, expiration):
         self.expiration = expiration
         super(Beeper, self).__init__(trigger_name_in, GPIO_Pin_in)
@@ -63,7 +62,7 @@ class Receiver():
 	timestamp = None
 	click_count = 0
 	pin = None
-	relay = None
+	sprink = None
 	beep = None
 
 
@@ -76,11 +75,11 @@ class Receiver():
 		self.on = False
 		self.timestamp = None
 		self.click_count = 0
-			
+
 	def check(self):
 		now = time.time()
-        self.sprink.check_expire()
-        
+	        self.sprink.check_expire()
+
 		if self.pin.check():  # If button down.
 			if not self.on:
 				self.click_count += 1
@@ -95,60 +94,60 @@ class Receiver():
 				if self.click_count == 1:
 					if self.sprink.status():
 						self.sprink.off()
-                        print(self.sprink.status())
-                        self.beep.beeps(1)
-                    else:
-                        self.spring.on(300)
-                        self.beep.beeps(2)
-                        print(">1")
+                        			print(self.sprink.status())
+                        			self.beep.beeps(1)
+						self.reset()
+                    			else:
+                        			self.spring.on(300)
+                        			self.beep.beeps(2)
+                        			print(">1")
 
 				elif self.click_count == 2 and not self.sprink.status():
-                    self.spring.on(600)
-                    self.beep.beeps(4)
+					self.spring.on(600)
+                    			self.beep.beeps(4)
 					print(">2")
 				elif self.click_count == 3 and not self.sprink.status():
-                    self.spring.on(1800)
-                    self.beep.beeps(4)
+					self.spring.on(1800)
+					self.beep.beeps(6)
 					print(">3")
 				self.reset()
-			
 
 
 def loop():
-    GPIO.cleanup()
-    print("Started\n")
-    
-    sprink1 = triggers.trigger('One', 21)
-    sprink2 = triggers.trigger('Two', 20)
-    sprink3 = triggers.trigger('Three', 16)
-    sprink4 = triggers.trigger('Four', 12)
-    
-    beep = Beeper('Beep', 24, 1)
-    
-    pin1 = sensors.sensor("One", 14)
-    pin2 = sensors.sensor("Two", 15)
-    pin3 = sensors.sensor("Three", 18)
-    pin4 = sensors.sensor("Four", 23)
-	
-    r1 = Receiver(pin1, sprink1, beep)
-    r2 = Receiver(pin2, sprink2, beep)
-    r3 = Receiver(pin3, sprink3, beep)
-    r4 = Receiver(pin4, sprink4, beep)
-    
-    try:
+	GPIO.cleanup()
+	print("Started\n")
+
+	sprink1 = triggers.trigger('One', 21)
+	sprink2 = triggers.trigger('Two', 20)
+	sprink3 = triggers.trigger('Three', 16)
+	sprink4 = triggers.trigger('Four', 12)
+
+	beep = Beeper('Beep', 24, 1)
+
+	pin1 = sensors.sensor("One", 14)
+	pin2 = sensors.sensor("Two", 15)
+	pin3 = sensors.sensor("Three", 18)
+	pin4 = sensors.sensor("Four", 23)
+
+	r1 = Receiver(pin1, sprink1, beep)
+	r2 = Receiver(pin2, sprink2, beep)
+	r3 = Receiver(pin3, sprink3, beep)
+	r4 = Receiver(pin4, sprink4, beep)
+
+	try:
 		while True:
 			r1.check()
 			r2.check()
 			r3.check()
 			r4.check()
-    except KeyboardInterrupt:
-        pass
-    
-    try:		
-        GPIO.cleanup()
-        print("Clean Exit")
-    except:
-        pass	
+	except KeyboardInterrupt:
+		pass
+
+	try:
+        	GPIO.cleanup()
+		print("Clean Exit")
+	except:
+		pass
 
 
 if __name__ == '__main__':
