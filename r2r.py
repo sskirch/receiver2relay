@@ -13,21 +13,22 @@ import RPi.GPIO as GPIO
 beep = None
 
 class Sprinkler(triggers.trigger, object):
-    timestamp = None
-    def __init__(self, trigger_name_in, GPIO_Pin_in, expiration):
-        self.expiration = expiration
-        super(Beeper, self).__init__(trigger_name_in, GPIO_Pin_in)
+	timestamp = None
+	def __init__(self, trigger_name_in, GPIO_Pin_in):
+        	self.expiration = 60
+        	super(Sprinkler, self).__init__(trigger_name_in, GPIO_Pin_in)
 
-    def on(self, on_seconds=60):
-        triggers.trigger.on(self)
-        self.expiration = on_seconds
-        self.timestamp = time.time()
+	def on(self, on_seconds=60):
+        	triggers.trigger.on(self)
+	        self.expiration = on_seconds
+        	self.timestamp = time.time()
 
-    def check_expire(self):
-        if self.status() and (time.time() - self.timestamp) > self.expiration:
-            triggers.trigger.off(self)
-            return True
-        return False
+	def check_expire(self):
+        	if self.status() and (time.time() - self.timestamp) > self.expiration:
+            		triggers.trigger.off(self)
+			print(str(self.trigger_name) + ' ' + str(self.trigger_status))
+			return True
+        	return False
 
 
 class Beeper(triggers.trigger, object):
@@ -50,9 +51,9 @@ class Beeper(triggers.trigger, object):
     def beeps(self, number_of_beeps):
         for i in range(0,number_of_beeps):
             if i !=0:
-                sleep(0.2)
+                time.sleep(0.1)
             triggers.trigger.on(self)
-            sleep(0.2)
+            time.sleep(0.1)
             triggers.trigger.off(self)
                 
 
@@ -61,15 +62,13 @@ class Receiver():
 	on = False
 	timestamp = None
 	click_count = 0
-	pin = None
-	sprink = None
-	beep = None
 
 
 	def __init__(self, pin, sprink, beep):
 		self.pin = pin
 		self.sprink = sprink
 		self.beep = beep
+		self.click_count = 0
 
 	def reset(self):
 		self.on = False
@@ -98,16 +97,16 @@ class Receiver():
                         			self.beep.beeps(1)
 						self.reset()
                     			else:
-                        			self.spring.on(300)
+                        			self.sprink.on(15)
                         			self.beep.beeps(2)
                         			print(">1")
 
 				elif self.click_count == 2 and not self.sprink.status():
-					self.spring.on(600)
+					self.sprink.on(600)
                     			self.beep.beeps(4)
 					print(">2")
 				elif self.click_count == 3 and not self.sprink.status():
-					self.spring.on(1800)
+					self.sprink.on(1800)
 					self.beep.beeps(6)
 					print(">3")
 				self.reset()
@@ -117,10 +116,10 @@ def loop():
 	GPIO.cleanup()
 	print("Started\n")
 
-	sprink1 = triggers.trigger('One', 21)
-	sprink2 = triggers.trigger('Two', 20)
-	sprink3 = triggers.trigger('Three', 16)
-	sprink4 = triggers.trigger('Four', 12)
+	sprink1 = Sprinkler('One', 21)
+	sprink2 = Sprinkler('Two', 20)
+	sprink3 = Sprinkler('Three', 16)
+	sprink4 = Sprinkler('Four', 12)
 
 	beep = Beeper('Beep', 24, 1)
 
