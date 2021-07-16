@@ -214,7 +214,7 @@ if __name__ == '__main__':
 			elif '-t' in a:
 				time_length = a.split('-t')[1]
 				try: 
-					time_length = int(relay)
+					time_length = int(time_length)
 				except:
 					print('Invalid argument: ' + str(a))
 					exit()
