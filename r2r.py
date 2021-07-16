@@ -173,13 +173,14 @@ def all_on(time_length=60):
 
 def relay_on(relay, time_length=60):
 	sprinklers = [ 
-	{'One', 21},
-	{'Two', 20},
-	{'Three', 16},
-	{'Four', 12}
+	{ name: 'One', id : 21},
+	{ name: 'Two', id : 20},
+	{ name: 'Three', id : 16},
+	{ name: 'Four', id : 12}
 	]	
 	
-	sprink = sprinklers[relay]
+	sprink_data = sprinklers[relay]
+	sprink = Sprinkler(sprink_data['name'], sprink_data['id'])
 	sprink.on(time_length)
 
 	try:
