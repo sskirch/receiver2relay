@@ -24,11 +24,11 @@ class Sprinkler(triggers.trigger, object):
         	self.timestamp = time.time()
 
 	def check_expire(self):
-        	if self.status() and (time.time() - self.timestamp) > self.expiration:
-            		triggers.trigger.off(self)
-			print(str(self.trigger_name) + ' ' + str(self.trigger_status))
+		if self.status() and (time.time() - self.timestamp) > self.expiration:
+			triggers.trigger.off(self)
 			return True
-        	return False
+		print(str(self.trigger_name) + ' ' + str(self.trigger_status))
+		return False
 
 
 class Beeper(triggers.trigger, object):
@@ -149,6 +149,85 @@ def loop():
 		pass
 
 
+	
+def all_on(time_length=60):
+	sprink1 = Sprinkler('One', 21)
+	sprink2 = Sprinkler('Two', 20)
+	sprink3 = Sprinkler('Three', 16)
+	sprink4 = Sprinkler('Four', 12)
+
+	sprink1.on(time_length)
+	sprink2.on(time_length)
+	sprink3.on(time_length)
+	sprink4.on(time_length)
+
+	try:
+		while True:
+			if sprink1.check_expire() and sprink2.check_expire() and sprink3.check_expire() and sprink4.check_expire():
+				print('Done')
+				exit()
+			time.sleep(0.1)
+	except KeyboardInterrupt:
+		pass
+	
+
+def relay_on(relay, time_length=60):
+	sprinklers = [ 
+	{'One', 21},
+	{'Two', 20},
+	{'Three', 16},
+	{'Four', 12}
+	]	
+	
+	sprink = sprinklers[relay]
+	sprink.on(time_length)
+
+	try:
+		while True:
+			if sprink.check_expire():
+				print('Done')
+				exit()
+			time.sleep(0.1)
+	except KeyboardInterrupt:
+		pass
+	
+	
+
 if __name__ == '__main__':
-	loop()
+	GPIO.cleanup()
+	time_length = None  #time in seconds
+	relay = None
+	all = False
+	if len(sys.argv) > 0:
+		for a in sys.argv:
+			if '-r' in a:
+				relay = a.split('-r')[1]
+				try: 
+					relay = int(relay)
+				except:
+					print('Invalid argument: ' + str(a))
+					exit()
+				if relay < 0 or relay > 3:
+					print('Invalid argument: ' + str(a))
+					exit()
+			elif '-t' in a:
+				time_length = a.split('-t')[1]
+				try: 
+					time_length = int(relay)
+				except:
+					print('Invalid argument: ' + str(a))
+					exit()
+			elif '-a' == a:
+				all = True
+				
+	if all and time_length:
+		all_on(time_length)
+	elif relay:
+		relay_on(relay, time_length)
+	
+	
+	
+	
+	
+	#loop()
 
